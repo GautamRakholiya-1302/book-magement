@@ -25,3 +25,19 @@ const router = express.Router();
 router.put('/:id', authMiddleware, updateUser);
 
 module.exports = router;
+
+
+//=================================
+//Create a Route for Searching
+const express = require('express');
+const { searchUsers } = require('../controllers/userController');
+
+const router = express.Router();
+
+// Search route: GET /api/users/search
+router.get('/search', searchUsers);
+
+module.exports = router;
+
+
+//===================================
