@@ -28,6 +28,84 @@ module.exports = { updateUser };
 
 
 
+//================================
+
+// search releted routes
+
+const User = require('../models/User');
+
+// Search for users by name or email
+const searchUsers = async (req, res, next) => {
+  const { query } = req.query; // Get the search query from the query string
+
+  try {
+    if (!query) {
+      return res.status(400).json({ message: 'Query parameter is required' });
+    }
+
+    // Use MongoDB's regex for case-insensitive partial matching
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } }, // Case-insensitive match on name
+        { email: { $regex: query, $options: 'i' } }, // Case-insensitive match on email
+      ],
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    next(error); // Pass errors to error middleware
+  }
+};
+
+module.exports = { searchUsers };
+
+
+//================================
+
+// Enhance Search with Pagination
+//---------------------------------------------------------------
+
+const searchUsers = async (req, res, next) => {
+  const { query, page = 1, limit = 10 } = req.query;
+
+  try {
+    if (!query) {
+      return res.status(400).json({ message: 'Query parameter is required' });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
+      ],
+    })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await User.countDocuments({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
+      ],
+    });
+
+    res.status(200).json({
+      users,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+//---------------------------------------------------------------
+
+
 // This is using error handling middlware 
 
 const User = require('../models/User');
