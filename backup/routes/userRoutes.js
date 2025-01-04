@@ -15,3 +15,13 @@ module.exports = router;
 //   "age": 30
 // }
 
+const express = require('express');
+const { updateUser } = require('../controllers/userController');
+const authMiddleware = require('../middleware/authMiddleware');
+
+const router = express.Router();
+
+// PUT /api/users/:id (protected route)
+router.put('/:id', authMiddleware, updateUser);
+
+module.exports = router;
