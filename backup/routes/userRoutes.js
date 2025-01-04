@@ -7,3 +7,6 @@ router.put('/:id', updateUser);
 
 module.exports = router;
 
+
+PUT http://localhost:5000/api/users/:id
+
