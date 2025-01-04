@@ -8,5 +8,10 @@ router.put('/:id', updateUser);
 module.exports = router;
 
 
-PUT http://localhost:5000/api/users/:id
+// PUT http://localhost:5000/api/users/:id
+// {
+//   "name": "John Doe",
+//   "email": "john.doe@example.com",
+//   "age": 30
+// }
 
